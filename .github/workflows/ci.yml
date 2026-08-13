@@ -2,18 +2,20 @@ name: CI Artifact Check
 
 on:
   push:
-    branches: [ "main", "feature/*" ]
+    branches: [ "main", "feature/*", "features/*" ]
   pull_request:
     branches: [ "main" ]
 
 jobs:
   check-artifact:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Run artifact check script
-        shell: cmd
-        run: scripts\check_artifact.cmd
+      - name: Build Docker Image
+        run: docker build -t shipit .
+
+      - name: Run Test Container
+        run: docker run --rm shipit
